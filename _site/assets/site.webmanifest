@@ -1,10 +1,10 @@
 {
-  "lang": "en",
+  
   "name": "elephacking",
   "short_name": "elephacking",
   "description": "A Student, a Security Fans, a Pentester. 隨便寫寫Cyber Security，在大學學到的東西和工作學到的東西",
   "start_url": "/?utm_source=homescreen",
-  "theme_color": "rgb(25,55,71)",
+  "theme_color": "rgb(8,46,57)",
   "background_color": "#fff",
   "orientation": "portrait",
   "display": "standalone",
