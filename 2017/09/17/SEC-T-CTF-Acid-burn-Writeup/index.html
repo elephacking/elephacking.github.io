@@ -7,23 +7,25 @@
   <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
   <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css">
   <link rel="stylesheet" href="/assets/styles.css"><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>elephacking | A Slave, a Security Fans, a Pentester, a Red Teamer - 隨便寫寫Cyber Security，在大學學到的東西和工作學到的東西 - I am moving my posts from the old blog to jekyll… -</title>
+<title>[SEC-T CTF]Acid burn Writeup | elephacking</title>
 <meta name="generator" content="Jekyll v3.9.0" />
-<meta property="og:title" content="elephacking" />
+<meta property="og:title" content="[SEC-T CTF]Acid burn Writeup" />
 <meta name="author" content="Elephacking" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="A Slave, a Security Fans, a Pentester, a Red Teamer - 隨便寫寫Cyber Security，在大學學到的東西和工作學到的東西 - I am moving my posts from the old blog to jekyll… -" />
-<meta property="og:description" content="A Slave, a Security Fans, a Pentester, a Red Teamer - 隨便寫寫Cyber Security，在大學學到的東西和工作學到的東西 - I am moving my posts from the old blog to jekyll… -" />
-<link rel="canonical" href="https://blog.hitlab.space/404.html" />
-<meta property="og:url" content="https://blog.hitlab.space/404.html" />
+<meta name="description" content="Acid burn – Misc (200 + 0) I suspect Acid Burn is hiding something in her background image, but I can’t quite figure out what is it. Can you help me?" />
+<meta property="og:description" content="Acid burn – Misc (200 + 0) I suspect Acid Burn is hiding something in her background image, but I can’t quite figure out what is it. Can you help me?" />
+<link rel="canonical" href="https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Acid-burn-Writeup/" />
+<meta property="og:url" content="https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Acid-burn-Writeup/" />
 <meta property="og:site_name" content="elephacking" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-09-17T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="elephacking" />
+<meta property="twitter:title" content="[SEC-T CTF]Acid burn Writeup" />
 <meta name="twitter:site" content="@<hidden>" />
 <meta name="twitter:creator" content="@Elephacking" />
 <meta name="google-site-verification" content="xxxxx" />
 <script type="application/ld+json">
-{"@type":"WebPage","url":"https://blog.hitlab.space/404.html","headline":"elephacking","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://blog.hitlab.space/assets/icons/favicon.ico"},"name":"Elephacking"},"author":{"@type":"Person","name":"Elephacking"},"description":"A Slave, a Security Fans, a Pentester, a Red Teamer - 隨便寫寫Cyber Security，在大學學到的東西和工作學到的東西 - I am moving my posts from the old blog to jekyll… -","@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","url":"https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Acid-burn-Writeup/","headline":"[SEC-T CTF]Acid burn Writeup","dateModified":"2017-09-17T00:00:00+08:00","datePublished":"2017-09-17T00:00:00+08:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://blog.hitlab.space/assets/icons/favicon.ico"},"name":"Elephacking"},"author":{"@type":"Person","name":"Elephacking"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.hitlab.space/2017/09/17/SEC-T-CTF-Acid-burn-Writeup/"},"description":"Acid burn – Misc (200 + 0) I suspect Acid Burn is hiding something in her background image, but I can’t quite figure out what is it. Can you help me?","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link type="application/atom+xml" rel="alternate" href="https://blog.hitlab.space/feed.xml" title="elephacking" />
 </head>
@@ -62,26 +64,62 @@
 </div>
 
       <div class="content pure-u-1 pure-u-md-1-2"><main>
-  <style type="text/css" media="screen">
-  .container {
-    margin: 10px auto;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
+  <article class="post">
+  <h1 class="post-title">[SEC-T CTF]Acid burn Writeup</h1>
+  <div class="post-meta"><time datetime="2017-09-17T00:00:00+08:00" itemprop="datePublished">17 Sep 2017</time></div>
 
-<div class="container">
-  <h1>404</h1>
+  <h1 id="acid-burn--misc-200--0">Acid burn – Misc (200 + 0)</h1>
+<p>I suspect Acid Burn is hiding something in her background image, but I can’t quite figure out what is it. Can you help me?</p>
 
-  <p><strong>Page not found :(</strong></p>
-  <p>The requested page could not be found.</p>
-</div>
+<p>Solves: 77</p>
+
+<p>Download: <a href="http://dl.ctf.rocks/acid_burn.tar.gz" title="http://dl.ctf.rocks/acid_burn.tar.gz">http://dl.ctf.rocks/acid_burn.tar.gz</a></p>
+
+<p>Author: SecureLink / klondike</p>
+
+<p>Change the webp format to png, then use stegsolve will find this</p>
+
+<p><a href="/assets/solved.png" title="solved"><img src="/assets/solved.png" alt="solved" title="solved" /></a></p>
+
+<p>After couple of hours to stare the screen.  Found the flag eventually Orz</p>
+
+<p>flag: SECT{I_LOVE_CRASH_OVERFLOW_BUT_I_CAN_NOT_TELL_HIM_HOW_I_FEEL_ABOUT_HIM}</p>
+
+<p>Here is the lesson: Protect your eyes for CTF.</p>
+
+
+  
+</article>
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Joeys-screenshot-writeup/">
+          [SEC-T CTF]Joeys screenshot writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Jail-writeup/">
+          [SEC-T CTF]Jail writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/2017/09/17/SEC-T-CTF-Jail-2-writeup/">
+          [SEC-T CTF]Jail 2 writeup
+          <small><time datetime="2017-09-17T00:00:00+08:00">17 Sep 2017</time></small>
+        </a>
+      </li>
+    
+  </ul>
+</aside>
+
 
 </main>
 
